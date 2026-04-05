@@ -29,7 +29,7 @@ public class DialogueUIController : MonoBehaviour
     {
         if (autoFindDialoguePanel && dialogueUIRoot == null)
         {
-            var panel = GameObject.Find("DialoguePanel");
+            var panel = FindDialoguePanel();
             if (panel != null) dialogueUIRoot = panel;
         }
 
@@ -53,7 +53,7 @@ public class DialogueUIController : MonoBehaviour
 
     public static void ApplyDialogueLayoutNow()
     {
-        var panelGO = GameObject.Find("DialoguePanel");
+        var panelGO = FindDialoguePanel();
         if (panelGO == null) return;
 
         var panel = panelGO.GetComponent<RectTransform>();
@@ -113,6 +113,41 @@ public class DialogueUIController : MonoBehaviour
         }
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(panel);
+    }
+
+    public static GameObject FindDialoguePanel()
+    {
+        var activeScene = SceneManager.GetActiveScene();
+        if (!activeScene.IsValid()) return null;
+
+        var roots = activeScene.GetRootGameObjects();
+        for (int i = 0; i < roots.Length; i++)
+        {
+            var match = FindChildRecursive(roots[i].transform, "DialoguePanel");
+            if (match != null)
+            {
+                return match.gameObject;
+            }
+        }
+
+        return null;
+    }
+
+    static Transform FindChildRecursive(Transform root, string targetName)
+    {
+        if (root == null) return null;
+        if (root.name == targetName) return root;
+
+        for (int i = 0; i < root.childCount; i++)
+        {
+            var match = FindChildRecursive(root.GetChild(i), targetName);
+            if (match != null)
+            {
+                return match;
+            }
+        }
+
+        return null;
     }
 
     static void ConfigureCanvas(RectTransform panel)

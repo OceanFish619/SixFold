@@ -30,7 +30,7 @@ public class HeatwaveDialoguePresenter : DialoguePresenterBase
 
         if (dialogueRoot == null)
         {
-            dialogueRoot = GameObject.Find("DialoguePanel");
+            dialogueRoot = DialogueUIController.FindDialoguePanel();
         }
 
         if (dialogueRoot == null) return;

@@ -268,7 +268,7 @@ public class HeatwaveCityGameController : MonoBehaviour
         presenter = FindFirstObjectByType<HeatwaveDialoguePresenter>();
         if (presenter != null) return;
 
-        var panel = GameObject.Find("DialoguePanel");
+        var panel = DialogueUIController.FindDialoguePanel();
         if (panel == null)
         {
             Debug.LogWarning("Heatwave: DialoguePanel not found in scene.");
