@@ -25,6 +25,22 @@ SixFold / HeatwaveMayor is a Unity 6 project on macOS. It is a narrative-managem
   - repeated HUD TMP rewrites
   - repeated NPC prompt TMP rewrites
   - repeated objective beacon TMP rewrites
+- `HeatwaveRoomNPCSystem.Awake()` is now instrumented with per-phase timing logs using the `HeatwaveStartup` prefix.
+- Verified startup timings on April 5, 2026 before the latest optimization:
+  - `InitializeTilePixelsPalette` 28.76 ms
+  - `BuildRoomDecorations` 13.90 ms
+  - `RebuildHeatwaveMap` 5.91 ms
+  - `SpawnAllRoomNpcs` 4.23 ms
+  - `Awake.Total` 63.64 ms
+- Verified startup timings on April 5, 2026 after the latest optimization:
+  - `InitializeTilePixelsPalette` 18.61 ms
+  - `BuildRoomDecorations` 5.84 ms
+  - `RebuildHeatwaveMap` 5.81 ms
+  - `SpawnAllRoomNpcs` 2.20 ms
+  - `Awake.Total` 42.71 ms
+- Current heaviest measured startup phase is still `InitializeTilePixelsPalette`, but it dropped by 10.15 ms after the optimization.
+- Verified cause of that phase cost: `TryInitializeExternalDroughtFloorPalette()` loaded many tile sprites during `Awake()`, and `LoadExternalTileSprite()` previously fell through to raw disk reads plus `Texture2D.LoadImage()` PNG decode when the resources mirror was absent.
+- Verified low-risk optimization: in the Unity Editor path, `LoadExternalTileSprite()` now uses `UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>()` before disk I/O, which avoids decoding those PNGs during startup.
 - Confirmed non-causes during prior verification:
   - no runaway spawning
   - no dialogue restart loop
@@ -41,12 +57,15 @@ SixFold / HeatwaveMayor is a Unity 6 project on macOS. It is a narrative-managem
 - `Assets/Scripts/HeatwaveRoomNPCSystem.cs`
   - keeps the objective beacon in world space, not UI space
   - creates the beacon once and updates transform/visibility without respawning
+  - logs one concise timing line per startup phase in `Awake()` with the `HeatwaveStartup` prefix
+  - uses `AssetDatabase.LoadAssetAtPath<Sprite>()` for external tile sprites in the Unity Editor before falling back to disk I/O
 - `Assets/Scripts/DialogueUIController.cs`
   - inactive-safe `DialoguePanel` lookup and skip button label/layout handling
 
 ## 6. Verified runtime facts
 - `uloop` compile returned `ErrorCount: 0` and `WarningCount: 0` on April 5, 2026.
 - Unity console was cleared, then read back as empty (`TotalCount: 0`) on April 5, 2026.
+- After the latest `HeatwaveRoomNPCSystem` startup pass on April 5, 2026, Unity console checks still showed `ErrorCount: 0` and `WarningCount: 0`.
 - Stable runtime baseline currently assumed:
   - object counts stay stable
   - NPC dialogue does not auto-restart
@@ -55,12 +74,10 @@ SixFold / HeatwaveMayor is a Unity 6 project on macOS. It is a narrative-managem
 
 ## 7. Current open issues
 - Startup lag investigation is not finished.
-- The main unresolved hotspot to inspect next is `HeatwaveRoomNPCSystem.Awake()`, especially the one-time world build path:
-  - map rebuild
-  - room decoration build
-  - task-site spawn
-  - heat haze creation
-  - NPC spawn
+- The main unresolved hotspot inside `HeatwaveRoomNPCSystem.Awake()` is still `InitializeTilePixelsPalette()` at 18.61 ms after the April 5, 2026 optimization.
+- Secondary startup phases after that optimization were much smaller:
+  - `BuildRoomDecorations` 5.84 ms
+  - `RebuildHeatwaveMap` 5.81 ms
 - Treat already-fixed TMP rewrite issues as closed unless new evidence appears.
 
 ## 8. uloop version note
@@ -80,4 +97,4 @@ SixFold / HeatwaveMayor is a Unity 6 project on macOS. It is a narrative-managem
 - Do not treat the uloop `1.6.4` report as a project bug by itself.
 
 ## 10. Next recommended task
-Profile or instrument `HeatwaveRoomNPCSystem.Awake()` to identify which startup phase dominates the remaining lag, then optimize that phase without changing gameplay behavior.
+If startup work continues, keep using the `HeatwaveStartup` logs and only revisit `InitializeTilePixelsPalette()` if there is new evidence for another safe reduction inside the tile sprite/palette setup path.

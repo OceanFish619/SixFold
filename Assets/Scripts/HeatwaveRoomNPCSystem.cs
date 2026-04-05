@@ -68,19 +68,24 @@ public class HeatwaveRoomNPCSystem : MonoBehaviour
 
     void Awake()
     {
-        FindSceneReferences();
-        EnsureWallColliderOptimization();
-        InitializeTilePixelsPalette();
-        RebuildHeatwaveMap();
-        BuildRoomDefinitions();
-        EnsureDecorRoots();
-        BuildRoomDecorations();
-        SpawnTaskSites();
-        CreateHeatHazeLayers();
-        EnsureObjectiveBeacon();
-        EnsureEnteringTextUI();
-        EnsureNpcDialogueUI();
-        SpawnAllRoomNpcs();
+        var startupStopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+        MeasureAwakePhase("FindSceneReferences", FindSceneReferences);
+        MeasureAwakePhase("EnsureWallColliderOptimization", EnsureWallColliderOptimization);
+        MeasureAwakePhase("InitializeTilePixelsPalette", InitializeTilePixelsPalette);
+        MeasureAwakePhase("RebuildHeatwaveMap", RebuildHeatwaveMap);
+        MeasureAwakePhase("BuildRoomDefinitions", BuildRoomDefinitions);
+        MeasureAwakePhase("EnsureDecorRoots", EnsureDecorRoots);
+        MeasureAwakePhase("BuildRoomDecorations", BuildRoomDecorations);
+        MeasureAwakePhase("SpawnTaskSites", SpawnTaskSites);
+        MeasureAwakePhase("CreateHeatHazeLayers", CreateHeatHazeLayers);
+        MeasureAwakePhase("EnsureObjectiveBeacon", EnsureObjectiveBeacon);
+        MeasureAwakePhase("EnsureEnteringTextUI", EnsureEnteringTextUI);
+        MeasureAwakePhase("EnsureNpcDialogueUI", EnsureNpcDialogueUI);
+        MeasureAwakePhase("SpawnAllRoomNpcs", SpawnAllRoomNpcs);
+
+        startupStopwatch.Stop();
+        Debug.Log($"HeatwaveStartup Awake.Total {startupStopwatch.Elapsed.TotalMilliseconds:F2}ms");
     }
 
     void Update()
@@ -101,6 +106,16 @@ public class HeatwaveRoomNPCSystem : MonoBehaviour
         UpdateObjectiveBeacon();
         UpdateHeatHaze();
         UpdateEnteringTextVisibility();
+    }
+
+    static void MeasureAwakePhase(string phaseName, System.Action action)
+    {
+        if (action == null) return;
+
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        action();
+        stopwatch.Stop();
+        Debug.Log($"HeatwaveStartup {phaseName} {stopwatch.Elapsed.TotalMilliseconds:F2}ms");
     }
 
     void FindSceneReferences()
@@ -298,6 +313,15 @@ public class HeatwaveRoomNPCSystem : MonoBehaviour
             externalTileSpriteCache[cacheKey] = fromResources;
             return fromResources;
         }
+
+#if UNITY_EDITOR
+        var imported = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>(projectRelativePath);
+        if (imported != null)
+        {
+            externalTileSpriteCache[cacheKey] = imported;
+            return imported;
+        }
+#endif
 
         string relativeFromAssets = projectRelativePath.StartsWith("Assets/")
             ? projectRelativePath.Substring("Assets/".Length)
