@@ -13,6 +13,17 @@ This repository is a Unity 6 project on macOS. The standard workflow is Codex CL
 - Do not reopen already-settled performance theories without new evidence.
 - Treat the known uloop `1.6.4` mismatch as a tooling warning unless concrete failures appear.
 
+## Investigation mode
+For regressions or unclear bugs, use a subagent workflow instead of a single-threaded investigation.
+Default split:
+- one subagent for runtime/performance symptoms
+- one subagent for gameplay/dialogue/content symptoms
+- one subagent for diff/blame analysis
+- one subagent for repair planning and verification design
+
+Do not make broad fixes before synthesizing the subagent results.
+Prefer the smallest safe repair that preserves previously working behavior.
+
 ## Memory File Rules
 - Update `memory.md` after any meaningful investigation, verified finding, or code change that future sessions should inherit.
 - Include `memory.md` in git changes when it is relevant to the work performed.
