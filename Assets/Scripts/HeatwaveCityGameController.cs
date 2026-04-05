@@ -893,6 +893,32 @@ public class HeatwaveCityGameController : MonoBehaviour
         image.type = Image.Type.Simple;
         image.preserveAspect = false;
         image.color = failure ? new Color(1f, 0.84f, 0.84f, 0.80f) : new Color(1f, 1f, 1f, 0.78f);
+
+        EnsureOverlayScrim(overlay.transform, failure);
+    }
+
+    static void EnsureOverlayScrim(Transform overlayRoot, bool failure)
+    {
+        if (overlayRoot == null) return;
+
+        var scrimNode = overlayRoot.Find("BottomScrim");
+        GameObject scrim = scrimNode != null
+            ? scrimNode.gameObject
+            : new GameObject("BottomScrim", typeof(RectTransform), typeof(Image));
+        scrim.transform.SetParent(overlayRoot, false);
+        scrim.transform.SetSiblingIndex(1);
+
+        var rect = scrim.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0f, 0f);
+        rect.anchorMax = new Vector2(1f, 0.36f);
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+
+        var image = scrim.GetComponent<Image>();
+        image.raycastTarget = false;
+        image.color = failure
+            ? new Color(0.15f, 0.03f, 0.03f, 0.54f)
+            : new Color(0.07f, 0.06f, 0.05f, 0.62f);
     }
 
     void ApplyLogo(GameObject overlay, Sprite logoSprite)

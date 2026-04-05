@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 121457581}
   - component: {fileID: 121457580}
   m_Layer: 0
-  m_Name: Square
+  m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19375,12 +19375,10 @@ MonoBehaviour:
   startDialogueKey: 116
   allowManualStart: 0
   autoStartDialogue: 1
-  autoStartDelay: 0.25
   showRuntimeHUD: 1
   hudMargin: {x: 24, y: 24}
   showRoomObjectives: 1
   forceOpeningNarrativeFallback: 1
-  openingNarrativeDelay: 0.9
   showTitleCoverOnLaunch: 1
   titleSceneName: TitleScene
   maxDays: 7
