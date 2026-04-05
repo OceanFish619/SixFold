@@ -37,6 +37,9 @@ public class HeatwaveCityGameController : MonoBehaviour
     TMP_Text objectiveText;
     TMP_Text guideText;
     float hudTick;
+    string lastStatusHudText;
+    string lastObjectiveHudText;
+    string lastGuideHudText;
     [SerializeField] int maxDays = 7;
     int currentDay = 1;
     bool finalResultEvaluated;
@@ -555,7 +558,7 @@ public class HeatwaveCityGameController : MonoBehaviour
         string vulnerable = ReadFloat(storage, "$vulnerable_risk");
         string budget = ReadFloat(storage, "$budget_reserve");
 
-        statusText.text =
+        string nextStatusText =
             "HEATWAVE CITY\n" +
             $"Day: {currentDay}/{maxDays}\n" +
             $"Heat Safety: {heatSafety}\n" +
@@ -563,11 +566,26 @@ public class HeatwaveCityGameController : MonoBehaviour
             $"Infrastructure: {infra}\n" +
             $"Vulnerable Risk: {vulnerable}\n" +
             $"Budget Reserve: {budget}";
+        if (!string.Equals(lastStatusHudText, nextStatusText, System.StringComparison.Ordinal))
+        {
+            lastStatusHudText = nextStatusText;
+            statusText.text = nextStatusText;
+        }
 
-        objectiveText.text = showRoomObjectives ? BuildRoomObjectiveText(storage) : "OBJECTIVES\nOff";
+        string nextObjectiveText = showRoomObjectives ? BuildRoomObjectiveText(storage) : "OBJECTIVES\nOff";
+        if (!string.Equals(lastObjectiveHudText, nextObjectiveText, System.StringComparison.Ordinal))
+        {
+            lastObjectiveHudText = nextObjectiveText;
+            objectiveText.text = nextObjectiveText;
+        }
         if (guideText != null)
         {
-            guideText.text = BuildLiveGuidance(storage);
+            string nextGuideText = BuildLiveGuidance(storage);
+            if (!string.Equals(lastGuideHudText, nextGuideText, System.StringComparison.Ordinal))
+            {
+                lastGuideHudText = nextGuideText;
+                guideText.text = nextGuideText;
+            }
         }
 
         UpdateFailureOverlay(storage);

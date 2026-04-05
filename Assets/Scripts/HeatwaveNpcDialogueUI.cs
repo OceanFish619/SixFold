@@ -12,6 +12,7 @@ public class HeatwaveNpcDialogueUI : MonoBehaviour
     GameObject panelRoot;
 
     object promptSource;
+    string promptValue;
     string[] activeLines;
     int lineIndex;
 
@@ -42,9 +43,26 @@ public class HeatwaveNpcDialogueUI : MonoBehaviour
     public void SetPrompt(object source, string text)
     {
         if (IsConversationOpen || promptText == null) return;
+
+        if (ReferenceEquals(promptSource, source) &&
+            promptText.gameObject.activeSelf &&
+            string.Equals(promptValue, text, System.StringComparison.Ordinal))
+        {
+            return;
+        }
+
         promptSource = source;
-        promptText.text = text;
-        promptText.gameObject.SetActive(true);
+        promptValue = text;
+
+        if (!string.Equals(promptText.text, text, System.StringComparison.Ordinal))
+        {
+            promptText.text = text;
+        }
+
+        if (!promptText.gameObject.activeSelf)
+        {
+            promptText.gameObject.SetActive(true);
+        }
     }
 
     public void ClearPrompt(object source)
@@ -53,7 +71,11 @@ public class HeatwaveNpcDialogueUI : MonoBehaviour
         if (!ReferenceEquals(promptSource, source)) return;
 
         promptSource = null;
-        promptText.gameObject.SetActive(false);
+        promptValue = null;
+        if (promptText.gameObject.activeSelf)
+        {
+            promptText.gameObject.SetActive(false);
+        }
     }
 
     public void StartConversation(string speaker, string[] lines)
@@ -70,6 +92,7 @@ public class HeatwaveNpcDialogueUI : MonoBehaviour
 
         if (promptText != null)
         {
+            promptValue = null;
             promptText.gameObject.SetActive(false);
             promptSource = null;
         }

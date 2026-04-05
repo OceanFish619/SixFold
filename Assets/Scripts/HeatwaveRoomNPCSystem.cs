@@ -1174,7 +1174,7 @@ public class HeatwaveRoomNPCSystem : MonoBehaviour
         textGo.transform.localPosition = new Vector3(0f, 1.1f, 0f);
         textGo.transform.localScale = new Vector3(0.26f, 0.26f, 0.26f);
         objectiveBeaconText = textGo.AddComponent<TextMeshPro>();
-        objectiveBeaconText.text = "GO";
+        objectiveBeaconText.text = "OBJECTIVE";
         objectiveBeaconText.fontSize = 9.1f;
         objectiveBeaconText.alignment = TextAlignmentOptions.Center;
         HeatwaveUIFontKit.ApplyReadableTMP(
@@ -1208,11 +1208,6 @@ public class HeatwaveRoomNPCSystem : MonoBehaviour
         objectiveBeacon.localScale = new Vector3(pulse, pulse, 1f);
         objectiveBeacon.position = target.position + new Vector3(0f, 1.95f, 0f);
         objectiveBeaconRenderer.color = new Color(1f, 0.84f, 0.42f, 0.56f + Mathf.Sin(Time.time * 5.1f) * 0.22f);
-
-        if (objectiveBeaconText != null)
-        {
-            objectiveBeaconText.text = "OBJECTIVE";
-        }
     }
 
     void EnsureEnteringTextUI()
