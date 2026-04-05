@@ -12,6 +12,7 @@ public class HeatwaveDialoguePresenter : DialoguePresenterBase
     [SerializeField] TMP_Text bodyText;
     [SerializeField] Button optionAButton;
     [SerializeField] Button optionBButton;
+    [SerializeField] Button closeButton;
 
     [Header("Input")]
     [SerializeField] KeyCode advanceKey = KeyCode.E;
@@ -19,6 +20,7 @@ public class HeatwaveDialoguePresenter : DialoguePresenterBase
     readonly List<Button> optionButtons = new List<Button>();
     DialogueOption[] currentOptions = System.Array.Empty<DialogueOption>();
     DialogueOption selectedOption;
+    Button boundCloseButton;
     bool waitingForLineAdvance;
     bool waitingForOptionSelect;
 
@@ -57,9 +59,16 @@ public class HeatwaveDialoguePresenter : DialoguePresenterBase
             if (optionB != null) optionBButton = optionB.GetComponent<Button>();
         }
 
+        if (closeButton == null)
+        {
+            var close = dialogueRoot.transform.Find("CloseButton");
+            if (close != null) closeButton = close.GetComponent<Button>();
+        }
+
         optionButtons.Clear();
         if (optionAButton != null) optionButtons.Add(optionAButton);
         if (optionBButton != null && optionBButton != optionAButton) optionButtons.Add(optionBButton);
+        BindCloseButton();
     }
 
     public override YarnTask OnDialogueStartedAsync()
@@ -92,6 +101,14 @@ public class HeatwaveDialoguePresenter : DialoguePresenterBase
         if (dialogueRoot != null) dialogueRoot.SetActive(false);
 
         return YarnTask.CompletedTask;
+    }
+
+    void OnDisable()
+    {
+        if (boundCloseButton != null)
+        {
+            boundCloseButton.onClick.RemoveListener(OnCloseRequested);
+        }
     }
 
     public override async YarnTask RunLineAsync(LocalizedLine line, LineCancellationToken token)
@@ -188,6 +205,41 @@ public class HeatwaveDialoguePresenter : DialoguePresenterBase
 
         selectedOption = currentOptions[index];
         waitingForOptionSelect = false;
+    }
+
+    void BindCloseButton()
+    {
+        if (boundCloseButton == closeButton) return;
+
+        if (boundCloseButton != null)
+        {
+            boundCloseButton.onClick.RemoveListener(OnCloseRequested);
+        }
+
+        boundCloseButton = closeButton;
+        if (boundCloseButton == null) return;
+
+        boundCloseButton.onClick.RemoveListener(OnCloseRequested);
+        boundCloseButton.onClick.AddListener(OnCloseRequested);
+    }
+
+    void OnCloseRequested()
+    {
+        waitingForLineAdvance = false;
+        waitingForOptionSelect = false;
+        HideAllOptionButtons();
+
+        var runner = FindFirstObjectByType<DialogueRunner>();
+        if (runner != null && runner.IsDialogueRunning)
+        {
+            runner.Stop().Forget();
+            return;
+        }
+
+        if (dialogueRoot != null)
+        {
+            dialogueRoot.SetActive(false);
+        }
     }
 
     void EnsureOptionButtons(int requiredCount)
