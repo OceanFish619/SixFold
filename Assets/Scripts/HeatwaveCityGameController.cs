@@ -20,7 +20,6 @@ public class HeatwaveCityGameController : MonoBehaviour
     [SerializeField] KeyCode startDialogueKey = KeyCode.T;
     [SerializeField] bool allowManualStart = false;
     [SerializeField] bool autoStartDialogue = true;
-    [SerializeField] float autoStartDelay = 0.25f;
 
     [Header("HUD")]
     [SerializeField] bool showRuntimeHUD = true;
@@ -28,7 +27,6 @@ public class HeatwaveCityGameController : MonoBehaviour
     [SerializeField] bool showRoomObjectives = true;
     [Header("Opening Fallback")]
     [SerializeField] bool forceOpeningNarrativeFallback = true;
-    [SerializeField] float openingNarrativeDelay = 0.9f;
     [Header("Flow UI")]
     [SerializeField] bool showTitleCoverOnLaunch = true;
     [SerializeField] string titleSceneName = "TitleScene";
@@ -76,12 +74,6 @@ public class HeatwaveCityGameController : MonoBehaviour
 
     void Start()
     {
-#if UNITY_EDITOR
-        // Ensure latest Yarn text edits are compiled before auto-start dialogue.
-        ForceReimportAssignedYarnProject();
-        TryAssignYarnProject();
-#endif
-
         if (dialogueRunner != null && dialogueRunner.YarnProject == null && presenter != null)
         {
             Debug.LogError("Heatwave: No YarnProject assigned at startup.");
@@ -130,7 +122,7 @@ public class HeatwaveCityGameController : MonoBehaviour
 
     public void StartHeatwaveDialogue()
     {
-        bool started = TryStartNode("C1_BOOTSTRAP", allowFallback: false);
+        bool started = TryStartOpeningDialogue();
         if (!started && presenter != null)
         {
             presenter.ShowSystemMessage(
@@ -167,17 +159,6 @@ public class HeatwaveCityGameController : MonoBehaviour
         }
 
         string nodeToStart = ResolveStartNode(dialogueRunner.YarnProject, requestedNode, allowFallback);
-#if UNITY_EDITOR
-        if (string.IsNullOrEmpty(nodeToStart))
-        {
-            ForceReimportAssignedYarnProject();
-            TryAssignYarnProject();
-            if (dialogueRunner.YarnProject != null)
-            {
-                nodeToStart = ResolveStartNode(dialogueRunner.YarnProject, requestedNode, allowFallback);
-            }
-        }
-#endif
         if (string.IsNullOrEmpty(nodeToStart))
         {
             Debug.LogWarning("Heatwave: Assigned YarnProject contains no playable nodes.");
@@ -371,7 +352,6 @@ public class HeatwaveCityGameController : MonoBehaviour
             try
             {
                 dialogueRunner.SetProject(yarnProject);
-                Debug.Log($"Heatwave: YarnProject assigned -> {yarnProject.name}");
             }
             catch (System.Exception ex)
             {
@@ -383,7 +363,7 @@ public class HeatwaveCityGameController : MonoBehaviour
 #if UNITY_EDITOR
     void TryAssignProjectFromKnownPath()
     {
-        const string projectPath = "Assets/Yarn/HeatwaveCity.yarnproject";
+        const string projectPath = "Assets/Resources/Yarn/HeatwaveCity.yarnproject";
 
         yarnProject = AssetDatabase.LoadAssetAtPath<YarnProject>(projectPath);
         if (yarnProject != null && TryGetNodeNames(yarnProject, out var existingNodes) && existingNodes.Length > 0)
@@ -593,16 +573,6 @@ public class HeatwaveCityGameController : MonoBehaviour
         UpdateFailureOverlay(storage);
     }
 
-    IEnumerator AutoStartDialogueRoutine()
-    {
-        if (autoStartDelay > 0f)
-        {
-            yield return new WaitForSeconds(autoStartDelay);
-        }
-
-        StartHeatwaveDialogue();
-    }
-
     void BuildFlowUI()
     {
         var canvas = FindFirstObjectByType<Canvas>();
@@ -714,6 +684,7 @@ public class HeatwaveCityGameController : MonoBehaviour
             6f,
             16f
         );
+        EnsureFrameBackdrop(frame.transform);
 
         titleText = EnsurePanelText(
             frame.transform,
@@ -747,6 +718,28 @@ public class HeatwaveCityGameController : MonoBehaviour
 
         actionButton = EnsurePanelButton(frame.transform, "ActionButton", new Vector2(0f, -190f), new Vector2(360f, 112f));
         return panel;
+    }
+
+    static void EnsureFrameBackdrop(Transform frameRoot)
+    {
+        if (frameRoot == null) return;
+
+        var backdropNode = frameRoot.Find("ContentBackdrop");
+        GameObject backdrop = backdropNode != null
+            ? backdropNode.gameObject
+            : new GameObject("ContentBackdrop", typeof(RectTransform), typeof(Image));
+        backdrop.transform.SetParent(frameRoot, false);
+        backdrop.transform.SetSiblingIndex(0);
+
+        var rect = backdrop.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0.14f, 0.22f);
+        rect.anchorMax = new Vector2(0.86f, 0.78f);
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+
+        var image = backdrop.GetComponent<Image>();
+        image.color = new Color(0.16f, 0.12f, 0.08f, 0.98f);
+        image.raycastTarget = false;
     }
 
     static TMP_Text EnsurePanelText(
@@ -1062,7 +1055,6 @@ public class HeatwaveCityGameController : MonoBehaviour
         if (resourceSprite != null)
         {
             coverSpriteCache[fileName] = resourceSprite;
-            Debug.Log($"Heatwave cover: loaded {fileName} from Resources");
             return resourceSprite;
         }
 
@@ -1120,7 +1112,6 @@ public class HeatwaveCityGameController : MonoBehaviour
                 SpriteMeshType.FullRect);
             sprite.name = fileName;
             coverSpriteCache[fileName] = sprite;
-            Debug.Log($"Heatwave cover: loaded {fileName} from {diskPath}");
             return sprite;
         }
         catch
@@ -1187,13 +1178,16 @@ public class HeatwaveCityGameController : MonoBehaviour
         if (failureOverlay != null) failureOverlay.SetActive(false);
         SetInputLock(false);
 
-        if (forceOpeningNarrativeFallback)
+        if (autoStartDialogue)
+        {
+            if (!TryStartOpeningDialogue() && forceOpeningNarrativeFallback)
+            {
+                StartCoroutine(PlayGuaranteedOpeningRoutine());
+            }
+        }
+        else if (forceOpeningNarrativeFallback)
         {
             StartCoroutine(PlayGuaranteedOpeningRoutine());
-        }
-        else if (autoStartDialogue)
-        {
-            StartCoroutine(AutoStartDialogueRoutine());
         }
     }
 
@@ -1309,11 +1303,6 @@ public class HeatwaveCityGameController : MonoBehaviour
 
     IEnumerator PlayGuaranteedOpeningRoutine()
     {
-        if (openingNarrativeDelay > 0f)
-        {
-            yield return new WaitForSeconds(openingNarrativeDelay);
-        }
-
         if (openingFallbackPlayed) yield break;
         if (dialogueRunner == null) yield break;
 
@@ -1378,6 +1367,11 @@ public class HeatwaveCityGameController : MonoBehaviour
         });
 
         TrySetBoolVariable("$met_maya", true);
+    }
+
+    bool TryStartOpeningDialogue()
+    {
+        return TryStartNode(startNode, allowFallback: false);
     }
 
     void InitializeCoreWeekVariables()
@@ -1492,24 +1486,6 @@ public class HeatwaveCityGameController : MonoBehaviour
             return false;
         }
     }
-
-#if UNITY_EDITOR
-    void ForceReimportAssignedYarnProject()
-    {
-        if (yarnProject == null)
-        {
-            TryAssignProjectFromKnownPath();
-        }
-        if (yarnProject == null) return;
-
-        string path = AssetDatabase.GetAssetPath(yarnProject);
-        if (string.IsNullOrWhiteSpace(path)) return;
-
-        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
-        AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
-        Debug.Log($"Heatwave: Reimported YarnProject at {path}");
-    }
-#endif
 
     string[] CompleteMayaTask(VariableStorageBehaviour storage)
     {

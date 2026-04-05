@@ -4,7 +4,7 @@ using Yarn.Compiler;
 
 public static class HeatwaveYarnProjectRepair
 {
-    const string YarnProjectPath = "Assets/Yarn/HeatwaveCity.yarnproject";
+    const string YarnProjectPath = "Assets/Resources/Yarn/HeatwaveCity.yarnproject";
 
     [MenuItem("Tools/Heatwave/Repair Yarn Project")]
     public static void RepairYarnProject()

@@ -1160,7 +1160,8 @@ public class HeatwaveRoomNPCSystem : MonoBehaviour
 
         var go = new GameObject("ObjectiveBeacon");
         objectiveBeacon = go.transform;
-        objectiveBeacon.SetParent(transform, false);
+        Transform worldParent = groundTilemap != null ? groundTilemap.transform.parent : null;
+        objectiveBeacon.SetParent(worldParent, false);
 
         objectiveBeaconRenderer = go.AddComponent<SpriteRenderer>();
         objectiveBeaconRenderer.sprite = GetSolidSprite();

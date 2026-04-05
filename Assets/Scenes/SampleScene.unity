@@ -152,6 +152,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   speed: 4
+  characterSheetName: Character_SpriteSheet
+  characterRow: 0
+  walkFps: 7
+  sheetColumns: 11
+  sheetRows: 6
+  useExternalMayorSprite: 1
+  mayorSpritePoseDir: Assets/ExternalAssets/Kenney/new-platformer-pack/Sprites/Characters/Default
+  mayorColorProfile: purple
+  playerVisualScale: 1.35
 --- !u!61 &121457581
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4508,6 +4517,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b047cfed040f4164ac055947cf1b2c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PrintGroundSize
+  logOnStart: 0
 --- !u!483693784 &1047266668
 TilemapRenderer:
   serializedVersion: 2
@@ -19305,56 +19315,6 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 0
---- !u!114 &1503966146
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1503966141}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40ec7078967cc415c91cdfb3d7485973, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HeatwaveCityGameController
-  yarnProject: {fileID: 11400000, guid: e4d6f739f0d44ad49a3c15752f6a9b3c, type: 2}
-  startNode: C1_BOOTSTRAP
-  startDialogueKey: 116
-  allowManualStart: 0
-  autoStartDialogue: 1
-  autoStartDelay: 0.25
-  showRuntimeHUD: 1
-  hudMargin: {x: 24, y: 24}
---- !u!114 &1503966147
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1503966141}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5185103bcb544f85a0c01371c2a8493, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DialogueUIController
-  dialogueUIRoot: {fileID: 1400093664}
-  autoFindDialoguePanel: 1
---- !u!114 &1503966148
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1503966141}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ec7f63cb27f4d2da00d97e696fa75f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HeatwaveRoomNPCSystem
-  enterMessageDuration: 1.8
-  initialNpcCount: 0
-  maxNpcCount: 6
-  npcTint: {r: 0.95, g: 0.82, b: 0.36, a: 1}
 --- !u!223 &1503966144
 Canvas:
   m_ObjectHideFlags: 0
@@ -19387,7 +19347,7 @@ RectTransform:
   m_GameObject: {fileID: 1503966141}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1400093665}
@@ -19398,6 +19358,63 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1503966146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1503966141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40ec7078967cc415c91cdfb3d7485973, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HeatwaveCityGameController
+  yarnProject: {fileID: 7545569452688597077, guid: 928541019ee4b4f90af86c79b353a174, type: 3}
+  startNode: C1_BOOTSTRAP
+  startDialogueKey: 116
+  allowManualStart: 0
+  autoStartDialogue: 1
+  autoStartDelay: 0.25
+  showRuntimeHUD: 1
+  hudMargin: {x: 24, y: 24}
+  showRoomObjectives: 1
+  forceOpeningNarrativeFallback: 1
+  openingNarrativeDelay: 0.9
+  showTitleCoverOnLaunch: 1
+  titleSceneName: TitleScene
+  maxDays: 7
+--- !u!114 &1503966147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1503966141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5185103bcb544f85a0c01371c2a8493, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueUIController
+  dialogueUIRoot: {fileID: 1400093664}
+  autoFindDialoguePanel: 1
+--- !u!114 &1503966148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1503966141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ec7f63cb27f4d2da00d97e696fa75f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HeatwaveRoomNPCSystem
+  enterMessageDuration: 1.8
+  cleanVisualStyle: 1
+  maxNpcCount: 6
+  npcTint: {r: 0.95, g: 0.82, b: 0.36, a: 1}
+  npcVisualScale: 1.22
 --- !u!1 &1533852634
 GameObject:
   m_ObjectHideFlags: 0
