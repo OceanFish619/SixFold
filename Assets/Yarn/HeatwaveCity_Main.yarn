@@ -1,0 +1,447 @@
+title: C1_BOOTSTRAP
+---
+<<declare $heat_safety = 45>>
+<<declare $community_trust = 40>>
+<<declare $infrastructure_stability = 42>>
+<<declare $vulnerable_risk = 68>>
+<<declare $budget_reserve = 100>>
+
+<<declare $current_day = 1>>
+<<declare $days_remaining = 6>>
+<<declare $heatwave_week_survived = false>>
+<<declare $heatwave_week_failed = false>>
+<<declare $day1_started = false>>
+
+<<declare $quest_petition_done = false>>
+<<declare $quest_grid_done = false>>
+<<declare $quest_buddy_done = false>>
+<<declare $quest_transit_done = false>>
+<<declare $quest_shade_done = false>>
+<<declare $quest_rowan_done = false>>
+<<declare $quest_final_done = false>>
+
+<<declare $met_maya = false>>
+<<declare $met_daniel = false>>
+<<declare $met_alvarez = false>>
+<<declare $met_jae = false>>
+<<declare $met_kai = false>>
+<<declare $met_rowan = false>>
+
+<<declare $maya_assigned = false>>
+<<declare $daniel_assigned = false>>
+<<declare $alvarez_assigned = false>>
+<<declare $transit_assigned = false>>
+<<declare $kai_assigned = false>>
+<<declare $rowan_assigned = false>>
+
+<<declare $maya_choice = 0>>
+<<declare $daniel_choice = 0>>
+<<declare $alvarez_choice = 0>>
+<<declare $transit_choice = 0>>
+<<declare $kai_choice = 0>>
+<<declare $rowan_choice = 0>>
+
+Narrator: Darkness. Then a ceiling fan hums above you.
+Narrator: You wake up in the mayor's office with no memory of your old world.
+Narrator: The digital wall clock reads 5:40 AM.
+Narrator: Outside the window, heat haze blurs the streets and buses already run half empty.
+Narrator: Today's forecast is 112F, with a night low of 94F.
+Narrator: A stalled high-pressure dome has trapped heat over the city for 19 days.
+Mayor: Where am I...?
+Mayor: This office, this city, none of this looks familiar.
+Mayor: Why is it this hot already? It feels like the air is burning.
+Narrator: In the last 48 hours, emergency lines logged 312 heat distress calls.
+Narrator: 68 residents were admitted for severe heat illness, and clinics are over capacity.
+Narrator: Cooling costs doubled in two districts this week. Some families now choose between rent and air conditioning.
+Narrator: This city gave you seven days. Day 7 is the hard deadline.
+Maya: Easy. Sit up slowly.
+Maya: Hi, Mayor. I'm Maya, community organizer for Library Block.
+Maya: You crossed worlds last night. You are Heatwave City's new mayor now.
+Maya: This role is not symbolic. Your choices decide who gets cooling, power, water, and safe nights.
+Maya: We solve this without violence. We do it through policy, coordination, and showing up in the right places.
+Maya: Before Day 1 starts, you must meet every district lead and hear the city directly.
+Maya: Meet Daniel, Mrs. Alvarez, Jae, Kai, and Rowan. Listen first, then decide.
+Maya: After that, come back to me. I will open the Day 1 response board.
+<<set $met_maya = true>>
+Mayor: Understood. I need the full picture before I sign anything.
+Assistant Lin: Orientation phase started.
+Assistant Lin: Follow the objective marker and meet each leader.
+Assistant Lin: Each leader will explain their district risk and what they need from you.
+<<stop>>
+===
+
+title: C1_CH1_RED_ALERT
+---
+<<if $day1_started == false>>
+    <<if $met_rowan == false>>
+        City Clerk Rowan: Hi Mayor. Rowan here, city clerk at Mayor Plaza.
+        City Clerk Rowan: My job is to track what the numbers hide.
+        City Clerk Rowan: This crisis is not only temperature. It is unequal access to protection.
+        City Clerk Rowan: Wealthier blocks can buy cooling. Poorer blocks absorb the worst risk and longer outages.
+        City Clerk Rowan: Your week is judged by Heat Safety, Community Trust, Infrastructure Stability, and Vulnerable Risk.
+        City Clerk Rowan: Meet every lead, then return to Maya to start Day 1 formally.
+        <<set $met_rowan = true>>
+        <<stop>>
+    <<else>>
+        City Clerk Rowan: You have my report already, Mayor.
+        City Clerk Rowan: Finish the remaining introductions, then begin Day 1 with Maya.
+        <<stop>>
+    <<endif>>
+<<else>>
+    <<if $quest_rowan_done>>
+        City Clerk Rowan: City alert audit is complete.
+        City Clerk Rowan: Messaging gaps are now visible on your dashboard.
+        -> Ask what to do now
+            City Clerk Rowan: Finish any open field tasks, then submit Final Audit on Day 7.
+            <<stop>>
+        -> Close briefing
+            <<stop>>
+    <<elseif $rowan_assigned>>
+        City Clerk Rowan: Communication plan is assigned.
+        City Clerk Rowan: Inspect the City Alert Audit marker in Mayor Plaza to validate rollout.
+        <<stop>>
+    <<else>>
+        City Clerk Rowan: Daily briefing.
+        City Clerk Rowan: Today is 112F, with nighttime lows still above 94F.
+        City Clerk Rowan: 1 in 4 households in old blocks report unsafe indoor heat after midnight.
+        City Clerk Rowan: Our weak point is city communication. Too many residents never receive alerts in time.
+        City Clerk Rowan: Pick one communication policy, then inspect the City Alert Audit site.
+        -> Plan A: Multilingual alerts + door-to-door volunteers
+            <<set $rowan_assigned = true>>
+            <<set $rowan_choice = 1>>
+            City Clerk Rowan: Good. Verify neighborhood coverage at the audit marker.
+            <<stop>>
+        -> Plan B: SMS alerts only
+            <<set $rowan_assigned = true>>
+            <<set $rowan_choice = 2>>
+            City Clerk Rowan: Lower cost, weaker reach. Confirm response gaps on site.
+            <<stop>>
+        -> Plan C: Delay communication update
+            <<set $rowan_assigned = true>>
+            <<set $rowan_choice = 3>>
+            City Clerk Rowan: Then inspect confusion points directly before this gets worse.
+            <<stop>>
+    <<endif>>
+<<endif>>
+===
+
+title: C1_DASHBOARD_BRIEF
+---
+System: Use the top-left board for city status.
+System: Use the objective board below it for side quests and next step.
+-> Return to map
+    <<stop>>
+===
+
+title: C1_CH1_AFTER_FIRST_POLICY
+---
+System: Field verification is required before policy rewards are granted.
+-> Return to map
+    <<stop>>
+===
+
+title: C1_SIDE_PETITION_START
+---
+<<if $day1_started == false>>
+    <<if $met_daniel && $met_alvarez && $met_jae && $met_kai && $met_rowan>>
+        Maya: Good. You met every district lead.
+        Maya: Then listen carefully. Starting now, this is Day 1.
+        Maya: Your goal this week is simple to say and hard to do: keep people alive fairly.
+        Maya: Assign policy, visit field sites yourself, and prove each action on the ground.
+        -> Start Day 1 now
+            <<set $day1_started = true>>
+            Maya: Day 1 has started. We begin with cooling access.
+            <<stop>>
+    <<else>>
+        Maya: Hi again, Mayor. We start Day 1 only after you meet every leader.
+        Maya: This week will punish rushed decisions, so hear the district reports first.
+        Maya: Then come back to me and we lock your first policy.
+        <<stop>>
+    <<endif>>
+<<elseif $quest_petition_done>>
+    Maya: Cooling petition work is already verified in the field. Thank you for showing up in person.
+    -> Close
+        <<stop>>
+<<elseif $maya_assigned>>
+    Maya: Policy is assigned. Go inspect the Library cooling hall to validate rollout.
+    -> Close
+        <<stop>>
+<<else>>
+    Maya: We have 4,300 households in the south blocks without reliable cooling.
+    Maya: The heatwave is no longer just weather, it is a survival gap.
+    Maya: Over 120 seniors were moved to corridor floors last night because rooms held heat.
+    Maya: Choose a cooling policy and then verify it yourself at the field site.
+    -> Open 3 temporary cooling centers tonight
+        <<set $maya_assigned = true>>
+        <<set $maya_choice = 1>>
+        Maya: Good. Go to the Library field marker and inspect operations.
+        <<stop>>
+    -> Delay and collect more studies first
+        <<set $maya_assigned = true>>
+        <<set $maya_choice = 2>>
+        Maya: If we delay, be ready to face people directly at the site.
+        <<stop>>
+    -> Home cooling subsidy only
+        <<set $maya_assigned = true>>
+        <<set $maya_choice = 3>>
+        Maya: Then verify who still gets left out at the field site.
+        <<stop>>
+<<endif>>
+===
+
+title: C1_SIDE_PETITION_STAGE2
+---
+Maya: Return after your field check if you want to tune this policy.
+-> Close
+    <<stop>>
+===
+
+title: C1_SIDE_GRID_START
+---
+<<if $day1_started == false>>
+    <<if $met_daniel == false>>
+        Daniel: Hi Mayor. I'm Daniel, lead grid engineer in South District.
+        Daniel: You need my pre-Day-1 brief.
+        Daniel: Peak load reached 96 percent yesterday. That is near cascading failure range.
+        Daniel: Night cooling demand keeps climbing while old transformers overheat.
+        Daniel: If two clusters fail together, we lose signals, clinic feeders, and some pump stations.
+        Daniel: Meet the other leaders, then come back after Day 1 starts for policy selection.
+        <<set $met_daniel = true>>
+        <<stop>>
+    <<else>>
+        Daniel: My orientation report is logged, Mayor.
+        Daniel: Finish the other meetings first, then we'll choose a grid strategy.
+        <<stop>>
+    <<endif>>
+<<elseif $quest_grid_done>>
+    Daniel: Grid policy is already validated on site.
+    -> Close
+        <<stop>>
+<<elseif $daniel_assigned>>
+    Daniel: Plan is assigned. Meet me at the transformer block marker and inspect failures directly.
+    -> Close
+        <<stop>>
+<<else>>
+    Daniel: Our peak load passed 96 percent of safe capacity yesterday.
+    Daniel: The grid was designed 30 years ago, before this level of nightly AC demand.
+    Daniel: If two transformer clusters fail together, hospitals and signals can drop.
+    -> Plan A: Rolling restrictions
+        <<set $daniel_assigned = true>>
+        <<set $daniel_choice = 1>>
+        Daniel: Then inspect neighborhood outages in person.
+        <<stop>>
+    -> Plan B: Temporary solar and battery hubs
+        <<set $daniel_assigned = true>>
+        <<set $daniel_choice = 2>>
+        Daniel: Then verify installation at the field marker.
+        <<stop>>
+    -> Plan C: Delay intervention
+        <<set $daniel_assigned = true>>
+        <<set $daniel_choice = 3>>
+        Daniel: Then at least visit the site and witness the risk yourself.
+        <<stop>>
+<<endif>>
+===
+
+title: C1_SIDE_BUDDY_START
+---
+<<if $day1_started == false>>
+    <<if $met_alvarez == false>>
+        Mrs. Alvarez: Hello Mayor. I'm Mrs. Alvarez from Old Quarter.
+        Mrs. Alvarez: Thank you for coming before Day 1 starts.
+        Mrs. Alvarez: Heat risk is not equal. Seniors and chronic patients decline fastest at night.
+        Mrs. Alvarez: Some neighbors avoid cooling centers because they fear paperwork, crowds, or shame.
+        Mrs. Alvarez: We need trust, transport, and check-ins, not only one announcement.
+        Mrs. Alvarez: Hear everyone first. Then come back with policy once Day 1 opens.
+        <<set $met_alvarez = true>>
+        <<stop>>
+    <<else>>
+        Mrs. Alvarez: You already heard us, Mayor.
+        Mrs. Alvarez: Please finish meeting the other leaders before Day 1 begins.
+        <<stop>>
+    <<endif>>
+<<elseif $quest_buddy_done>>
+    Mrs. Alvarez: You came to our buildings yourself. People noticed.
+    -> Close
+        <<stop>>
+<<elseif $alvarez_assigned>>
+    Mrs. Alvarez: We are waiting for your field visit in Old Quarter homes.
+    -> Close
+        <<stop>>
+<<else>>
+    Mrs. Alvarez: In my building alone, 17 elders live without working air conditioning.
+    Mrs. Alvarez: We now sleep in shifts to check who is still breathing normally.
+    Mrs. Alvarez: The heat after midnight is worse than noon for heart patients.
+    -> Fund a Heatwave Buddy system
+        <<set $alvarez_assigned = true>>
+        <<set $alvarez_choice = 1>>
+        Mrs. Alvarez: Then come inspect home visits directly.
+        <<stop>>
+    -> Hotline only
+        <<set $alvarez_assigned = true>>
+        <<set $alvarez_choice = 2>>
+        Mrs. Alvarez: Then stand at the site and hear response times.
+        <<stop>>
+    -> No city support
+        <<set $alvarez_assigned = true>>
+        <<set $alvarez_choice = 3>>
+        Mrs. Alvarez: Then at least witness what people face.
+        <<stop>>
+<<endif>>
+===
+
+title: C1_CH1_BRANCH_HUB
+---
+System: Keep exploring. Assign policy first, then complete the matching field verification.
+-> Return to map
+    <<stop>>
+===
+
+title: C1_CH1_RECOVER_LOOP
+---
+System: Keep working district by district.
+-> Return to map
+    <<stop>>
+===
+
+title: C1_CH2_HEATWAVE_WEEK
+---
+<<if $day1_started == false>>
+    <<if $met_jae == false>>
+        Station Worker Jae: Hi Mayor, I'm Jae, station operations lead at Transit Hub.
+        Station Worker Jae: Orientation note from Transit Hub.
+        Station Worker Jae: Platform surface hit 131F yesterday. Workers still had to run shifts.
+        Station Worker Jae: If transit fails, low-income families lose cooling access and wages together.
+        Station Worker Jae: We need shade, water points, and stable signals during peak heat hours.
+        Station Worker Jae: Meet everyone first. Day 1 policy selection comes after Maya's kickoff.
+        <<set $met_jae = true>>
+        <<stop>>
+    <<else>>
+        Station Worker Jae: Report delivered, Mayor. Continue orientation.
+        <<stop>>
+    <<endif>>
+<<elseif $quest_transit_done>>
+    Station Worker Jae: Transit heat mitigation is already completed.
+    -> Close
+        <<stop>>
+<<elseif $transit_assigned>>
+    Station Worker Jae: Assignment is active. Inspect the platform field marker.
+    -> Close
+        <<stop>>
+<<else>>
+    Station Worker Jae: Platform surface reached 131F yesterday at 1 PM.
+    Station Worker Jae: Two commuters collapsed, and train delays trapped people in heat pockets.
+    Station Worker Jae: If transit cooling fails, low-income workers lose both income and safety.
+    -> Prioritize clinic and signal feeders
+        <<set $transit_assigned = true>>
+        <<set $transit_choice = 1>>
+        Station Worker Jae: Then inspect platform flow at noon heat.
+        <<stop>>
+    -> Cooling tents and water points
+        <<set $transit_assigned = true>>
+        <<set $transit_choice = 2>>
+        Station Worker Jae: Then verify deployment at the field marker.
+        <<stop>>
+    -> Limited upgrade, split budget
+        <<set $transit_assigned = true>>
+        <<set $transit_choice = 3>>
+        Station Worker Jae: Then inspect which stops are still exposed.
+        <<stop>>
+<<endif>>
+===
+
+title: C1_CH2_WORKER_BRANCH
+---
+Station Worker Jae: Use field evidence before making your final transit claims.
+-> Close
+    <<stop>>
+===
+
+title: C1_CH2_END
+---
+System: Transit package progress is tracked on the objective board.
+-> Return to map
+    <<stop>>
+===
+
+title: C1_CH3_SHADE_CITY_START
+---
+<<if $day1_started == false>>
+    <<if $met_kai == false>>
+        Kai: Hi Mayor. I'm Kai, urban climate planner from the Cooling Center team.
+        Kai: Pre-Day-1 planning note.
+        Kai: This city stores heat because concrete outnumbers trees block by block.
+        Kai: Heat maps already show up to 9F difference between rich and poor districts.
+        Kai: We need cooler routes, shade corridors, and fair access, not just more AC load.
+        Kai: Meet all leads first. Then we choose strategy when Day 1 officially starts.
+        <<set $met_kai = true>>
+        <<stop>>
+    <<else>>
+        Kai: My orientation brief is complete, Mayor.
+        Kai: Finish the rest, then return to Maya to launch Day 1.
+        <<stop>>
+    <<endif>>
+<<elseif $quest_shade_done>>
+    Kai: Shade corridor package is already validated on site.
+    -> Close
+        <<stop>>
+<<elseif $kai_assigned>>
+    Kai: Assignment is active. Inspect the cooling corridor field marker.
+    -> Close
+        <<stop>>
+<<else>>
+    Kai: Rich blocks have tree shade and cross-ventilation, poor blocks have bare concrete.
+    Kai: Our heat maps show up to 9F difference between neighborhoods at the same hour.
+    Kai: We need structural cooling, not only short-term AC demand.
+    -> Shade-first plan (trees + awnings + cool corridors)
+        <<set $kai_assigned = true>>
+        <<set $kai_choice = 1>>
+        Kai: Good. Walk the corridor with me and verify route access.
+        <<stop>>
+    -> AC subsidy-first plan
+        <<set $kai_assigned = true>>
+        <<set $kai_choice = 2>>
+        Kai: Then inspect overload pressure at the corridor marker.
+        <<stop>>
+    -> Hybrid plan
+        <<set $kai_assigned = true>>
+        <<set $kai_choice = 3>>
+        Kai: Then verify both shade and cooling access in person.
+        <<stop>>
+<<endif>>
+===
+
+title: C1_CH3_SECOND_CHOICE
+---
+Kai: Finish field verification before claiming this strategy complete.
+-> Close
+    <<stop>>
+===
+
+title: C1_END_EVALUATION
+---
+System: Final status is determined by your Day 7 metrics and field completion.
+-> Return to map
+    <<stop>>
+===
+
+title: C1_END_LOW
+---
+Narrator: Heatwave City remains fragile.
+-> Close
+    <<stop>>
+===
+
+title: C1_END_MID
+---
+Narrator: Heatwave City partially adapts.
+-> Close
+    <<stop>>
+===
+
+title: C1_END_HIGH
+---
+Narrator: Heatwave City becomes resilient.
+-> Close
+    <<stop>>
+===

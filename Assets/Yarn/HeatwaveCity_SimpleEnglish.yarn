@@ -1,0 +1,213 @@
+title: C1_START
+---
+<<declare $heat_safety = 50>>
+<<declare $community_trust = 50>>
+<<declare $infrastructure_stability = 50>>
+<<declare $city_health = 50>>
+<<declare $blackout_risk = 20>>
+<<declare $cooling_centers_opened = false>>
+
+Narrator: You wake up in the mayor's office.
+Narrator: The city outside is silent.
+Narrator: The temperature today is 112°F.
+Narrator: This is your first day as mayor of Heatwave City.
+Narrator: The city has suffered extreme heat for weeks.
+Narrator: Hospitals are full. Electricity demand is rising. Many people cannot afford air conditioning.
+
+Assistant: Mayor, we have a serious situation.
+Assistant: This heatwave is getting worse.
+Assistant: The city council wants a plan. People are already complaining.
+Assistant: Several community leaders are waiting to speak with you.
+
+System: Objective - Talk to residents and decide how to protect the city from the heatwave.
+-> Meet Maya (Community Organizer)
+    <<jump C1_NPC1_MAYA>>
+===
+
+title: C1_NPC1_MAYA
+---
+Maya: Mayor, thank you for meeting with me.
+Maya: People in the south district are suffering the most.
+Maya: Many families do not have air conditioning.
+Maya: Some elderly residents are already getting sick.
+Maya: We need cooling centers.
+Maya: Libraries and schools could stay open during the night so people can escape the heat.
+Maya: But the city government has not approved this yet.
+
+-> 1) Support the cooling centers
+    Mayor: You are right. We cannot wait.
+    Mayor: I will approve temporary cooling centers.
+    Maya: Thank you, mayor.
+    Maya: If we organize volunteers, we can open them tonight.
+    Maya: People will remember that the city helped them.
+    <<set $community_trust += 12>>
+    <<set $city_health += 6>>
+    <<set $cooling_centers_opened = true>>
+    System: Outcome - Community Trust increases.
+    <<jump C1_NPC2_DANIEL>>
+-> 2) Wait and study first
+    Mayor: I understand your concerns.
+    Mayor: But we need more information before making a decision.
+    Maya: Mayor, the heat is already hurting people.
+    Maya: Waiting might make things worse.
+    <<set $community_trust -= 12>>
+    <<set $city_health -= 4>>
+    System: Outcome - Community Trust decreases.
+    <<jump C1_NPC2_DANIEL>>
+===
+
+title: C1_NPC2_DANIEL
+---
+Daniel: Mayor, I need to warn you.
+Daniel: Our electrical grid is under serious pressure.
+Daniel: Everyone is using air conditioning at the same time.
+Daniel: The system was built thirty years ago.
+Daniel: If demand keeps rising, we may have blackouts.
+
+-> 1) Limit electricity usage during peak hours
+    Mayor: We will introduce temporary power limits.
+    Daniel: That will reduce pressure on the grid.
+    Daniel: But some residents may be unhappy.
+    <<set $infrastructure_stability += 10>>
+    <<set $community_trust -= 4>>
+    <<set $blackout_risk -= 5>>
+    System: Outcome - Infrastructure Stability increases, Community Trust slightly decreases.
+    <<jump C1_NPC3_ALVAREZ>>
+-> 2) Install temporary solar power units
+    Mayor: Let us install temporary solar power systems.
+    Daniel: That will help reduce demand from the main grid.
+    Daniel: It is expensive, but it may protect the city long term.
+    <<set $infrastructure_stability += 15>>
+    <<set $blackout_risk -= 8>>
+    <<set $city_health += 2>>
+    System: Outcome - Infrastructure Stability increases greatly.
+    <<jump C1_NPC3_ALVAREZ>>
+-> 3) Ignore the problem for now
+    Mayor: We will deal with the problem later.
+    Daniel: Mayor, I hope the system can survive the heat.
+    <<set $infrastructure_stability -= 12>>
+    <<set $blackout_risk += 20>>
+    <<set $city_health -= 6>>
+    System: Outcome - Risk of citywide blackout increases.
+    <<jump C1_NPC3_ALVAREZ>>
+===
+
+title: C1_NPC3_ALVAREZ
+---
+Mrs. Alvarez: Hello mayor.
+Mrs. Alvarez: I have lived in this city for forty years.
+Mrs. Alvarez: It was never this hot before.
+Mrs. Alvarez: My apartment has no air conditioning.
+Mrs. Alvarez: Many older people in my building are afraid of this heat.
+
+Maya: Mayor, we are organizing a neighborhood program.
+Maya: Volunteers will check on elderly residents every day.
+Maya: We call it the Heatwave Buddy System.
+Maya: But we need some support from the city.
+
+-> 1) Fund the community program
+    Mayor: The city will support the program.
+    Mayor: We will help organize volunteers.
+    Mrs. Alvarez: Thank you, mayor.
+    Mrs. Alvarez: This makes people feel less alone.
+    <<set $city_health += 12>>
+    <<set $community_trust += 8>>
+    System: Outcome - City Health increases, Community Trust increases.
+    <<jump C1_NPC4_KAI>>
+-> 2) Let the community manage it alone
+    Mayor: The community should organize it themselves.
+    Maya: We will try, but the city could help much more.
+    <<set $city_health += 3>>
+    <<set $community_trust -= 3>>
+    System: Outcome - Small improvement only.
+    <<jump C1_NPC4_KAI>>
+===
+
+title: C1_NPC4_KAI
+---
+Kai: Mayor, the real problem is not just the heat.
+Kai: It is the design of the city.
+Kai: Too much concrete. Too few trees.
+Kai: This creates the urban heat island effect.
+Kai: The city traps heat during the day and night.
+
+Kai: We can start planting thousands of trees.
+Kai: Parks and green streets can reduce temperature across the city.
+Kai: But it will require investment.
+
+-> 1) Invest in city trees and green spaces
+    Mayor: Let us make the city greener.
+    Kai: This will take time.
+    Kai: But it will make the city cooler in the future.
+    <<set $heat_safety += 12>>
+    <<set $city_health += 5>>
+    <<set $infrastructure_stability += 4>>
+    System: Outcome - Long-term heat reduction.
+    <<jump C1_FINAL_EVENT>>
+-> 2) Invest in more air conditioning systems
+    Mayor: We will focus on cooling buildings.
+    Kai: That may help now.
+    Kai: But electricity demand will increase.
+    <<set $heat_safety += 7>>
+    <<set $infrastructure_stability -= 6>>
+    <<set $blackout_risk += 8>>
+    System: Outcome - Short-term relief, higher grid pressure.
+    <<jump C1_FINAL_EVENT>>
+===
+
+title: C1_FINAL_EVENT
+---
+Narrator: After several days, the heatwave reaches its peak.
+Assistant: Mayor, today will be the hottest day yet.
+Assistant: The decisions you made will determine how the city survives.
+Assistant: Hospitals are preparing. Residents are watching.
+
+System: Final Metrics
+System: Heat Safety {$heat_safety}
+System: Community Trust {$community_trust}
+System: Infrastructure Stability {$infrastructure_stability}
+System: City Health {$city_health}
+System: Blackout Risk {$blackout_risk}
+
+<<if $cooling_centers_opened == false and $blackout_risk >= 35>>
+    <<jump C1_ENDING_CRISIS>>
+<<elseif $heat_safety >= 70 and $community_trust >= 60 and $infrastructure_stability >= 60 and $city_health >= 60 and $blackout_risk <= 25>>
+    <<jump C1_ENDING_RESILIENT>>
+<<else>>
+    <<jump C1_ENDING_SURVIVAL>>
+<<endif>>
+===
+
+title: C1_ENDING_CRISIS
+---
+Narrator: Ending 1 - Crisis.
+Narrator: Cooling centers were not opened. The grid fails.
+Narrator: Blackouts spread across the city.
+Narrator: Many residents lose trust in the government.
+Narrator: Heatwave City struggles to recover.
+-> End
+    <<stop>>
+===
+
+title: C1_ENDING_SURVIVAL
+---
+Narrator: Ending 2 - Survival.
+Narrator: Some programs worked.
+Narrator: The city survives the heatwave.
+Narrator: But many problems remain.
+Narrator: The city must prepare better for the future.
+-> End
+    <<stop>>
+===
+
+title: C1_ENDING_RESILIENT
+---
+Narrator: Ending 3 - Resilient City.
+Narrator: Cooling centers helped residents.
+Narrator: Community programs protected vulnerable people.
+Narrator: The electrical grid remained stable.
+Narrator: Heatwave City becomes a model for climate adaptation.
+Narrator: Other cities begin to study your policies.
+-> End
+    <<stop>>
+===

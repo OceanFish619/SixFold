@@ -1,0 +1,38 @@
+key,category,text
+hud_heat_safety,hud,Heat Safety
+hud_community_trust,hud,Community Trust
+hud_infrastructure_stability,hud,Infrastructure Stability
+hud_city_health,hud,City Health
+hud_blackout_risk,hud,Blackout Risk
+hud_budget,hud,Budget Reserve
+hud_policy_support,hud,Policy Support
+alert_red_heat,alert,Red Heat Alert Active
+alert_hospital_load,alert,Hospitals Near Capacity
+alert_grid_strain,alert,Power Grid Under Severe Strain
+alert_blackout_warning,alert,Blackout Risk Rising
+alert_cooling_center_open,alert,Cooling Centers Open Tonight
+alert_water_points,alert,Free Water Points Available
+alert_midday_worker_risk,alert,Outdoor Worker Heat Risk: Extreme
+alert_old_quarter,alert,Old Quarter Heat Index Critical
+alert_night_heat,alert,Night Temperature Remains Dangerous
+alert_tree_canopy_gap,alert,Shade Access Uneven Across Districts
+alert_public_reaction,alert,Public Sentiment Shift Detected
+button_support,button,Support Now
+button_delay,button,Delay Decision
+button_fund,button,Fund Program
+button_limit_power,button,Limit Peak Power
+button_install_solar,button,Install Temporary Solar
+button_ignore,button,Ignore for Now
+button_open_centers,button,Open Cooling Centers
+button_tree_plan,button,Invest in Shade Plan
+button_ac_plan,button,Expand AC Support
+button_finalize,button,Finalize Heatwave Plan
+objective_opening,objective,Talk to residents and decide how to protect the city.
+objective_peak_day,objective,Prepare for the hottest day and keep the city stable.
+quest_petition,quest,The Cooling Petition
+quest_grid,quest,Grid Under Pressure
+quest_buddy,quest,Check on Your Neighbor
+quest_shade,quest,Shade the City
+result_crisis,result,Crisis: Heatwave response failed.
+result_survival,result,Survival: City endured, but remains vulnerable.
+result_resilient,result,Resilient City: A model of climate adaptation.

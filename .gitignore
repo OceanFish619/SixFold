@@ -1,0 +1,40 @@
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+Temp 2/
+
+# Generated project files
+*.csproj
+*.sln
+*.slnx
+*.user
+*.tmp
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+
+# Local tooling and artifacts
+.agents/
+.codex/
+.uloop/
+.vscode/
+BUGS/
+HeatwaveMayor_BurstDebugInformation_DoNotShip/
+
+# Local build artifacts bundled in repo root
+SixFold.app/
+SixFold.zip
